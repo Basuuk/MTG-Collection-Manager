@@ -1,1 +1,1 @@
-INITdgfaddfsdffas
+INIT
