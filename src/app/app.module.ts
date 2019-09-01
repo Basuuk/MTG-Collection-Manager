@@ -4,6 +4,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MaterialModule } from './modules/material.module';
 import { MtgCollectionComponent } from './mtg-collection/mtg-collection.component';
+import { CardService } from './services/card.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -13,9 +15,12 @@ import { MtgCollectionComponent } from './mtg-collection/mtg-collection.componen
   imports: [
     BrowserModule,
     AppRoutingModule,
-    MaterialModule
+    MaterialModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    CardService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
