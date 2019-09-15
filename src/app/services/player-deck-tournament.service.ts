@@ -2,16 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class RoundService {
+export class PlayerDeckTournamentService {
 
     constructor(private http: HttpClient) { }
 
     findByTournament(tournamentId: number) {
-        return this.http.get("http://localhost:8080/rounds?tournamentId=" + tournamentId);
+        return this.http.get("http://localhost:8080/pdt?tournamentId=" + tournamentId);
     }
 
     findByTournamentAndPlayer(tournamentId: number, playerId: number) {
-        return this.http.get("http://localhost:8080/player-rounds?tournamentId=" + tournamentId + "&playerId=" + playerId);
+        return this.http.get("http://localhost:8080/playerPdt?tournamentId=" + tournamentId + "&playerId=" + playerId);
     }
 
 }

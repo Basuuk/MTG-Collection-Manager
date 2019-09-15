@@ -1,9 +1,13 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { tap } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 import { TournamentDataSource } from '../datasources/tournament.datasource';
 import { TournamentService } from '../services/tournament.service';
+import { RoundService } from '../services/round.service';
+import { of } from 'rxjs';
+import { PlayerDeckTournamentService } from '../services/player-deck-tournament.service';
+import { ActivePlayerService } from '../services/active-player.service';
 
 @Component({
     selector: "stats",
@@ -24,10 +28,15 @@ export class StatsComponent implements OnInit, AfterViewInit {
     dataSource: TournamentDataSource;
     displayedColumns: string[] = ['date', 'title', 'location'];
     expandedElement: any;
+    tRounds: any[];
+    tDeck: string;
 
     @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
-    constructor(private tournamentService: TournamentService) { }
+    constructor(private tournamentService: TournamentService,
+        private roundService: RoundService,
+        private pDTService: PlayerDeckTournamentService,
+        private activePlayerService: ActivePlayerService) { }
 
     ngOnInit() {
         this.dataSource = new TournamentDataSource(this.tournamentService);
@@ -46,7 +55,18 @@ export class StatsComponent implements OnInit, AfterViewInit {
     }
 
     selectRow(row: any) {
-        console.log(row);
+        this.pDTService.findByTournamentAndPlayer(row.id, this.activePlayerService.getActivePlayer()).pipe(
+            catchError(() => of([])))
+            .subscribe(pdt => { console.log("el pdt", pdt) });
+        this.roundService.findByTournamentAndPlayer(row.id, this.activePlayerService.getActivePlayer()).pipe(
+            catchError(() => of([])))
+            .subscribe(rounds => { this.tRounds = rounds as any[]; console.log(this.tRounds) });
+        // this.pDTService.findByTournament(row.id).pipe(
+        //     catchError(() => of([])))
+        //     .subscribe(pdt => {console.log("el pdt", pdt)});
+        // this.roundService.findByTournament(row.id).pipe(
+        //     catchError(() => of([])))
+        //     .subscribe(rounds => {this.tRounds = rounds as any[]; console.log(this.tRounds)});
     }
 
 }
