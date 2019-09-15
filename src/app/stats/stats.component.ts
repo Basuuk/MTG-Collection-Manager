@@ -14,7 +14,7 @@ export class StatsComponent implements OnInit, AfterViewInit {
 
     length: number;
     dataSource: TournamentDataSource;
-    displayedColumns: string[] = ['title', 'location', 'date'];
+    displayedColumns: string[] = ['date', 'title', 'location'];
 
     @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
@@ -34,6 +34,10 @@ export class StatsComponent implements OnInit, AfterViewInit {
 
     loadLessonsPage() {
         this.dataSource.findTournaments(this.paginator.pageIndex, this.paginator.pageSize);
+    }
+
+    selectRow(row: any) {
+        console.log(row);
     }
 
 }

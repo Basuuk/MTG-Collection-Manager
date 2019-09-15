@@ -27,6 +27,10 @@
         <mat-spinner></mat-spinner>
     </div>
     <mat-table class="mat-elevation-z8" [dataSource]="dataSource">
+        <ng-container matColumnDef="date">
+            <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.date}}</mat-cell>
+        </ng-container>
         <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Título</mat-header-cell>
             <mat-cell *matCellDef="let element">{{element.title}}</mat-cell>
@@ -35,12 +39,8 @@
             <mat-header-cell *matHeaderCellDef>Ubicación</mat-header-cell>
             <mat-cell *matCellDef="let element">{{element.location}}</mat-cell>
         </ng-container>
-        <ng-container matColumnDef="date">
-            <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{element.date}}</mat-cell>
-        </ng-container>
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns" class="pointer" (click)="selectRow(row)"></mat-row>
     </mat-table>
     <mat-paginator [length]="length" [pageSize]="15" [pageSizeOptions]="[15, 30, 45]" showFirstLastButtons></mat-paginator>
 </div>
