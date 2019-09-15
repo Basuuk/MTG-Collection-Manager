@@ -3,12 +3,3 @@
 
 $default-theme: mat-dark-theme(mat-palette($mat-green, A400), mat-palette($mat-light-blue, A400));
 @include angular-material-theme($default-theme);
-
-html,
-body,
-app-root,
-.app-frame {
-  // margin: 0;
-  color: #e0e0e0;
-  font-family: 'Roboto', sans-serif;
-}

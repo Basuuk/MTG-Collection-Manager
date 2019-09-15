@@ -11,7 +11,7 @@ export class TournamentService {
 
     constructor(private http: HttpClient) { }
 
-    findAll(page: number = 0, size: number = 15): Observable<Tournament[]> {
+    findAll(page: number = 0, size: number = 10): Observable<Tournament[]> {
         return this.http.get("http://localhost:8080/tournaments?page=" + page + "&size=" + size).pipe(
             map(res =>  { this.length = res["totalElements"]; return res["content"]})
         );;

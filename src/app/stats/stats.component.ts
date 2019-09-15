@@ -1,3 +1,4 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { tap } from 'rxjs/operators';
@@ -7,7 +8,14 @@ import { TournamentService } from '../services/tournament.service';
 @Component({
     selector: "stats",
     templateUrl: "stats.component.html",
-    styleUrls: ["./stats.component.scss"]
+    styleUrls: ["./stats.component.scss"],
+    animations: [
+        trigger('detailExpand', [
+            state('collapsed', style({ height: '0px', minHeight: '0' })),
+            state('expanded', style({ height: '*' })),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+    ],
 })
 
 export class StatsComponent implements OnInit, AfterViewInit {
@@ -15,6 +23,7 @@ export class StatsComponent implements OnInit, AfterViewInit {
     length: number;
     dataSource: TournamentDataSource;
     displayedColumns: string[] = ['date', 'title', 'location'];
+    expandedElement: any;
 
     @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
@@ -22,7 +31,7 @@ export class StatsComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
         this.dataSource = new TournamentDataSource(this.tournamentService);
-        this.dataSource.findTournaments(0, 15);
+        this.dataSource.findTournaments(0, 10);
         setTimeout(() => this.length = this.tournamentService.length, 100);
     }
 

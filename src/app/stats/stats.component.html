@@ -26,21 +26,37 @@
     <div class="spinner-container" *ngIf="dataSource.loading$ | async">
         <mat-spinner></mat-spinner>
     </div>
-    <mat-table class="mat-elevation-z8" [dataSource]="dataSource">
+    <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
         <ng-container matColumnDef="date">
-            <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{element.date}}</mat-cell>
+            <th mat-header-cell *matHeaderCellDef> Fecha </th>
+            <td mat-cell *matCellDef="let element"> {{element.date}} </td>
         </ng-container>
         <ng-container matColumnDef="title">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Título</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{element.title}}</mat-cell>
+            <th mat-header-cell *matHeaderCellDef> Título </th>
+            <td mat-cell *matCellDef="let element"> {{element.title}} </td>
         </ng-container>
         <ng-container matColumnDef="location">
-            <mat-header-cell *matHeaderCellDef>Ubicación</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{element.location}}</mat-cell>
+            <th mat-header-cell *matHeaderCellDef> Ubicación </th>
+            <td mat-cell *matCellDef="let element"> {{element.location}} </td>
         </ng-container>
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns" class="pointer" (click)="selectRow(row)"></mat-row>
-    </mat-table>
-    <mat-paginator [length]="length" [pageSize]="15" [pageSizeOptions]="[15, 30, 45]" showFirstLastButtons></mat-paginator>
+        <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+                <div class="tournament-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                    <!-- Lo que sea que meta aquí, tiene que llevar padding o queda feo. -->
+                    <div style="padding: 16px">
+                        {{element.comments}}
+                        <!-- AQUI VAN LAS RONDAS, A VER COMO COÑO LO HAGO -->
+                    </div>
+                </div>
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let element; columns: displayedColumns;" class="tournament-row"
+            [class.tournament-expanded-row]="expandedElement === element"
+            (click)="expandedElement = expandedElement === element ? null : element; selectRow(element)">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="tournament-detail-row"></tr>
+    </table>
+    <mat-paginator [length]="length" [pageSize]="10" [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons>
+    </mat-paginator>
 </div>
