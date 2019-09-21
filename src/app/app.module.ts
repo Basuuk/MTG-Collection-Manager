@@ -12,6 +12,7 @@ import { RoundService } from './services/round.service';
 import { TournamentService } from './services/tournament.service';
 import { StatsComponent } from './stats/stats.component';
 import { ActivePlayerService } from './services/active-player.service';
+import { CommunicationService } from './services/communication.service';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { ActivePlayerService } from './services/active-player.service';
     RoundService,
     TournamentService,
     PlayerDeckTournamentService,
-    ActivePlayerService
+    ActivePlayerService,
+    CommunicationService
   ],
   bootstrap: [AppComponent]
 })

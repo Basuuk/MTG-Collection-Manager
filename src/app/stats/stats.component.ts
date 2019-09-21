@@ -8,16 +8,17 @@ import { RoundService } from '../services/round.service';
 import { of } from 'rxjs';
 import { PlayerDeckTournamentService } from '../services/player-deck-tournament.service';
 import { ActivePlayerService } from '../services/active-player.service';
+import { CommunicationService } from '../services/communication.service';
 
 @Component({
     selector: "stats",
     templateUrl: "stats.component.html",
     styleUrls: ["./stats.component.scss"],
     animations: [
-        trigger('detailExpand', [
-            state('collapsed', style({ height: '0px', minHeight: '0' })),
-            state('expanded', style({ height: '*' })),
-            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        trigger("detailExpand", [
+            state("collapsed", style({ height: "0px", minHeight: "0" })),
+            state("expanded", style({ height: "*" })),
+            transition("expanded <=> collapsed", animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")),
         ]),
     ],
 })
@@ -26,7 +27,7 @@ export class StatsComponent implements OnInit, AfterViewInit {
 
     length: number;
     dataSource: TournamentDataSource;
-    displayedColumns: string[] = ['date', 'title', 'location'];
+    displayedColumns: string[] = ["date", "deck", "result", "title", "location", "comments"];
     expandedElement: any;
     tRounds: any[];
     tDeck: string;
@@ -36,11 +37,13 @@ export class StatsComponent implements OnInit, AfterViewInit {
     constructor(private tournamentService: TournamentService,
         private roundService: RoundService,
         private pDTService: PlayerDeckTournamentService,
-        private activePlayerService: ActivePlayerService) { }
+        private activePlayerService: ActivePlayerService,
+        private comService: CommunicationService) { }
 
     ngOnInit() {
         this.dataSource = new TournamentDataSource(this.tournamentService);
         this.dataSource.findTournaments(0, 10);
+        this.comService.getObservable().subscribe(() => this.loadLessonsPage());
         setTimeout(() => this.length = this.tournamentService.length, 100);
     }
 
@@ -55,18 +58,19 @@ export class StatsComponent implements OnInit, AfterViewInit {
     }
 
     selectRow(row: any) {
-        this.pDTService.findByTournamentAndPlayer(row.id, this.activePlayerService.getActivePlayer()).pipe(
-            catchError(() => of([])))
-            .subscribe(pdt => { console.log("el pdt", pdt) });
         this.roundService.findByTournamentAndPlayer(row.id, this.activePlayerService.getActivePlayer()).pipe(
             catchError(() => of([])))
-            .subscribe(rounds => { this.tRounds = rounds as any[]; console.log(this.tRounds) });
-        // this.pDTService.findByTournament(row.id).pipe(
-        //     catchError(() => of([])))
-        //     .subscribe(pdt => {console.log("el pdt", pdt)});
-        // this.roundService.findByTournament(row.id).pipe(
-        //     catchError(() => of([])))
-        //     .subscribe(rounds => {this.tRounds = rounds as any[]; console.log(this.tRounds)});
+            .subscribe(rounds => this.tRounds = rounds as any[]);
+    }
+
+    getFinalResult(row: any): any {
+        let playerResult = row.pdt.filter((x) => x.player.id == this.activePlayerService.getActivePlayer());
+        return playerResult[0] ? playerResult[0].finalResult : "";
+    }
+
+    getPlayer1Deck(row: any): any {
+        let playerResult = row.pdt.filter((x) => x.player.id == this.activePlayerService.getActivePlayer());
+        return playerResult[0] ? playerResult[0].deck.name : "";
     }
 
 }

@@ -1,27 +1,3 @@
-<!-- <div class="mat-elevation-z8">
-    <div class="spinner-container" *ngIf="dataSource.loading$ | async">
-        <mat-spinner></mat-spinner>
-    </div>
-    <table mat-table [dataSource]="dataSource">
-        <ng-container matColumnDef="title">
-            <th mat-header-cell *matHeaderCellDef> Título </th>
-            <td mat-cell *matCellDef="let element"> {{element.title}} </td>
-        </ng-container>
-        <ng-container matColumnDef="location">
-            <th mat-header-cell *matHeaderCellDef> Ubicación </th>
-            <td mat-cell *matCellDef="let element"> {{element.location}} </td>
-        </ng-container>
-        <ng-container matColumnDef="date">
-            <th mat-header-cell *matHeaderCellDef> Fecha </th>
-            <td mat-cell *matCellDef="let element"> {{element.date}} </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-
-    <mat-paginator [pageSizeOptions]="[5, 10, 25, 30]"showFirstLastButtons></mat-paginator>
-</div> -->
-
 <div>
     <div class="spinner-container" *ngIf="dataSource.loading$ | async">
         <mat-spinner></mat-spinner>
@@ -31,6 +7,14 @@
             <th mat-header-cell *matHeaderCellDef> Fecha </th>
             <td mat-cell *matCellDef="let element"> {{element.date}} </td>
         </ng-container>
+        <ng-container matColumnDef="deck">
+            <th mat-header-cell *matHeaderCellDef> Deck </th>
+            <td mat-cell *matCellDef="let element"> {{ getPlayer1Deck(element) }} </td>
+        </ng-container>
+        <ng-container matColumnDef="result">
+            <th mat-header-cell *matHeaderCellDef> Resultado </th>
+            <td mat-cell *matCellDef="let element"> {{ getFinalResult(element) }} </td>
+        </ng-container>
         <ng-container matColumnDef="title">
             <th mat-header-cell *matHeaderCellDef> Título </th>
             <td mat-cell *matCellDef="let element"> {{element.title}} </td>
@@ -39,13 +23,21 @@
             <th mat-header-cell *matHeaderCellDef> Ubicación </th>
             <td mat-cell *matCellDef="let element"> {{element.location}} </td>
         </ng-container>
+        <ng-container matColumnDef="comments">
+            <th mat-header-cell *matHeaderCellDef> Comentarios </th>
+            <td mat-cell *matCellDef="let element"> {{element.comments}} </td>
+        </ng-container>
         <ng-container matColumnDef="expandedDetail">
             <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
                 <div class="tournament-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-                    <!-- Lo que sea que meta aquí, tiene que llevar padding o queda feo. -->
-                    <div style="padding: 16px">
-                        {{element.comments}}
-                        <!-- AQUI VAN LAS RONDAS, A VER COMO COÑO LO HAGO -->
+                    <div>
+                        <table class="mat-table">
+                            <tr class="mat-row" *ngFor="let item of tRounds">
+                                <td class="mat-cell">{{ item.player2.name }}</td>
+                                <td class="mat-cell">{{ item.deck.name }}</td>
+                                <td class="mat-cell">{{ item.result }}</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </td>

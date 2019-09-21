@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivePlayerService } from '../services/active-player.service';
+import { CommunicationService } from '../services/communication.service';
 
 @Component({
     selector: "active-player",
@@ -16,7 +17,10 @@ export class ActivePlayerComponent {
 
     previousClicked: number = 0;
 
-    constructor(private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer, private activePlayerService: ActivePlayerService) {
+    constructor(private matIconRegistry: MatIconRegistry,
+        private domSanitizer: DomSanitizer,
+        private activePlayerService: ActivePlayerService,
+        private comService: CommunicationService) {
         this.matIconRegistry.addSvgIcon("nigekki", this.domSanitizer.bypassSecurityTrustResourceUrl("../../assets/nigekki.svg"));
         this.matIconRegistry.addSvgIcon("adriku", this.domSanitizer.bypassSecurityTrustResourceUrl("../../assets/adriku.svg"));
         this.matIconRegistry.addSvgIcon("nahum", this.domSanitizer.bypassSecurityTrustResourceUrl("../../assets/nahum.svg"));
@@ -32,6 +36,7 @@ export class ActivePlayerComponent {
         this.previousClicked = activePlayer;
         btnMap[activePlayer].color = "accent";
         this.activePlayerService.setActivePlayer(activePlayer);
+        this.comService.emit(true);
     }
 
 }
