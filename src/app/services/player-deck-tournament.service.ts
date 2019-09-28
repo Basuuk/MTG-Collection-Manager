@@ -14,4 +14,12 @@ export class PlayerDeckTournamentService {
         return this.http.get("http://localhost:8080/playerPdt?tournamentId=" + tournamentId + "&playerId=" + playerId);
     }
 
+    findByPlayer(playerId: number) {
+        return this.http.get("http://localhost:8080/onlyPlayerPdt?playerId=" + playerId);
+    }
+
+    findAll() {
+        return this.http.get("http://localhost:8080/pdts");
+    }
+
 }

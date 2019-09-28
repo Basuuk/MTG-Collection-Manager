@@ -1,0 +1,28 @@
+.pointer {
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+}
+
+tr.tournament-detail-row {
+  height: 0;
+}
+
+tr.tournament-row:not(.tournament-expanded-row):hover {
+  background: #616161;
+}
+
+tr.tournament-row:not(.tournament-expanded-row):active {
+  background: #616161;
+}
+
+.tournament-row td {
+  border-bottom-width: 0;
+}
+
+.tournament-detail {
+  overflow: hidden;
+  display: flex;
+}

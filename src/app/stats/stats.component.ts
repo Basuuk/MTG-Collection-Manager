@@ -1,76 +1,58 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { tap, catchError } from 'rxjs/operators';
-import { TournamentDataSource } from '../datasources/tournament.datasource';
-import { TournamentService } from '../services/tournament.service';
-import { RoundService } from '../services/round.service';
-import { of } from 'rxjs';
-import { PlayerDeckTournamentService } from '../services/player-deck-tournament.service';
+import { Component, OnInit } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { ActivePlayerService } from '../services/active-player.service';
-import { CommunicationService } from '../services/communication.service';
+import { PlayerDeckTournamentService } from '../services/player-deck-tournament.service';
 
 @Component({
-    selector: "stats",
-    templateUrl: "stats.component.html",
-    styleUrls: ["./stats.component.scss"],
-    animations: [
-        trigger("detailExpand", [
-            state("collapsed", style({ height: "0px", minHeight: "0" })),
-            state("expanded", style({ height: "*" })),
-            transition("expanded <=> collapsed", animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")),
-        ]),
-    ],
+    selector: 'stats',
+    templateUrl: './stats.component.html',
+    styleUrls: ['./stats.component.scss']
 })
 
-export class StatsComponent implements OnInit, AfterViewInit {
+export class StatsComponent implements OnInit {
 
-    length: number;
-    dataSource: TournamentDataSource;
-    displayedColumns: string[] = ["date", "deck", "result", "title", "location", "comments"];
-    expandedElement: any;
-    tRounds: any[];
-    tDeck: string;
+    nahumPDTs: any[] = [];
+    nigekkiPDTs: any[] = [];
+    adrikuPDTs: any[] = [];
+    nahumVictories: number = 0;
+    nigekkiVictories: number = 0;
+    adrikuVictories: number = 0;
+    deckResults: any[] = [];
+    finalDeckResults: any[] = [];
 
-    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+    constructor(private activePlayerService: ActivePlayerService,
+        private pDTService: PlayerDeckTournamentService) {
 
-    constructor(private tournamentService: TournamentService,
-        private roundService: RoundService,
-        private pDTService: PlayerDeckTournamentService,
-        private activePlayerService: ActivePlayerService,
-        private comService: CommunicationService) { }
+    }
 
     ngOnInit() {
-        this.dataSource = new TournamentDataSource(this.tournamentService);
-        this.dataSource.findTournaments(0, 10);
-        this.comService.getObservable().subscribe(() => this.loadLessonsPage());
-        setTimeout(() => this.length = this.tournamentService.length, 100);
+        forkJoin(this.pDTService.findByPlayer(1), this.pDTService.findByPlayer(2), this.pDTService.findByPlayer(3))
+            .subscribe((pdt: any[]) => {
+                pdt[0].concat(pdt[1]).concat(pdt[2]).forEach((t: any) => {
+                    if (t.player.id == 1 && t.wonPrize) {
+                        this.nahumVictories++;
+                    } else if (t.player.id == 2 && t.wonPrize) {
+                        this.nigekkiVictories++;
+                    } else if (t.player.id == 3 && t.wonPrize) {
+                        this.adrikuVictories++;
+                    }
+                    this.deckResults.push({ deck: t.deck.name, victories: +t.finalResult.charAt(0), loses: +t.finalResult.charAt(2), draws: t.finalResult.charAt(4) != "" ? t.finalResult.charAt(4) : 0 });
+                });
+                this.deckResults.forEach((deck) => {
+                    if (this.finalDeckResults.find((f) => f.deck == deck.deck) == undefined) {
+                        this.finalDeckResults.push({ deck: deck.deck, tV: deck.victories, tL: deck.loses, tD: deck.draws });
+                    } else {
+                        let repeated: any = this.finalDeckResults.find((f) => f.deck == deck.deck);
+                        repeated.tV = repeated.tV + deck.victories;
+                        repeated.tL = repeated.tL + deck.loses;
+                        repeated.tD = repeated.tD + deck.draws;
+                    }
+                });
+            });
     }
 
-    ngAfterViewInit() {
-        this.paginator.page
-            .pipe(tap(() => this.loadLessonsPage()))
-            .subscribe();
-    }
-
-    loadLessonsPage() {
-        this.dataSource.findTournaments(this.paginator.pageIndex, this.paginator.pageSize);
-    }
-
-    selectRow(row: any) {
-        this.roundService.findByTournamentAndPlayer(row.id, this.activePlayerService.getActivePlayer()).pipe(
-            catchError(() => of([])))
-            .subscribe(rounds => this.tRounds = rounds as any[]);
-    }
-
-    getFinalResult(row: any): any {
-        let playerResult = row.pdt.filter((x) => x.player.id == this.activePlayerService.getActivePlayer());
-        return playerResult[0] ? playerResult[0].finalResult : "";
-    }
-
-    getPlayer1Deck(row: any): any {
-        let playerResult = row.pdt.filter((x) => x.player.id == this.activePlayerService.getActivePlayer());
-        return playerResult[0] ? playerResult[0].deck.name : "";
+    getWinRatio(deck: any): any {
+        return (deck.tV * 100 / (deck.tV + deck.tL + deck.tD)).toFixed(1);
     }
 
 }
