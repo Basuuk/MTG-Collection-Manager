@@ -1,10 +1,12 @@
-<h1>Victorias por jugador</h1>
+<h1>Veces que has pescado premio</h1>
 <h3>Nahum: <strong>{{nahumVictories}}</strong> veces</h3>
 <h3>Nigekki: <strong>{{nigekkiVictories}}</strong> veces</h3>
 <h3>Adriku: <strong>{{adrikuVictories}}</strong> veces</h3>
-
-
-<h1>Victorias por deck</h1>
+<h1>Resultados por deck</h1>
 <ul>
-    <li *ngFor="let deck of finalDeckResults">{{ deck.deck }}: {{ deck.tV }}-{{deck.tL}}-{{deck.tD}}. W/R: {{getWinRatio(deck)}}</li>
+    <li *ngFor="let deck of finalDeckResults"><strong>{{ deck.deck }}:</strong> {{ deck.tV }}-{{deck.tL}}-{{deck.tD}}. Win Rate: {{getWinRatio(deck)}} %</li>
+</ul>
+<h1>Qué decks pescaron premio</h1>
+<ul>
+    <li *ngFor="let deck of deckVictories"><strong>{{ deck.deck }}:</strong> {{ deck.victories }} {{getVictoryText(deck.victories)}}</li>
 </ul>

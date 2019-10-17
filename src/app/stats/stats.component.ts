@@ -19,6 +19,8 @@ export class StatsComponent implements OnInit {
     adrikuVictories: number = 0;
     deckResults: any[] = [];
     finalDeckResults: any[] = [];
+    decksWon: any[] = [];
+    deckVictories: any[] = [];
 
     constructor(private activePlayerService: ActivePlayerService,
         private pDTService: PlayerDeckTournamentService) {
@@ -30,13 +32,20 @@ export class StatsComponent implements OnInit {
             .subscribe((pdt: any[]) => {
                 pdt[0].concat(pdt[1]).concat(pdt[2]).forEach((t: any) => {
                     if (t.player.id == 1 && t.wonPrize) {
+                        this.decksWon.push(t.deck.name);
                         this.nahumVictories++;
                     } else if (t.player.id == 2 && t.wonPrize) {
+                        this.decksWon.push(t.deck.name);
                         this.nigekkiVictories++;
                     } else if (t.player.id == 3 && t.wonPrize) {
+                        this.decksWon.push(t.deck.name);
                         this.adrikuVictories++;
                     }
                     this.deckResults.push({ deck: t.deck.name, victories: +t.finalResult.charAt(0), loses: +t.finalResult.charAt(2), draws: t.finalResult.charAt(4) != "" ? t.finalResult.charAt(4) : 0 });
+                });
+                let u = [...new Set(this.decksWon)];
+                u.forEach((d) => {
+                    this.deckVictories.push({deck: d, victories: this.getOccurrence(this.decksWon, d)});
                 });
                 this.deckResults.forEach((deck) => {
                     if (this.finalDeckResults.find((f) => f.deck == deck.deck) == undefined) {
@@ -55,4 +64,11 @@ export class StatsComponent implements OnInit {
         return (deck.tV * 100 / (deck.tV + deck.tL + deck.tD)).toFixed(1);
     }
 
+    getOccurrence(array: any[], value: any): number {
+        return array.filter((v) => (v === value)).length;
+    }
+
+    getVictoryText(victories: number): string {
+        return victories === 1 ? "vez." : "veces.";
+    }
 }
