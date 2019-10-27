@@ -9,6 +9,7 @@ import { of } from 'rxjs';
 import { PlayerDeckTournamentService } from '../services/player-deck-tournament.service';
 import { ActivePlayerService } from '../services/active-player.service';
 import { CommunicationService } from '../services/communication.service';
+import { Tournament } from '../models/tournament';
 
 @Component({
     selector: "tournament",
@@ -27,7 +28,7 @@ export class TournamentComponent implements OnInit, AfterViewInit {
 
     length: number;
     dataSource: TournamentDataSource;
-    displayedColumns: string[] = ["date", "deck", "result", "title", "location", "comments"];
+    displayedColumns: string[] = ["date", "deck", "result", "title", "location", "comments", "actions"];
     expandedElement: any;
     tRounds: any[];
     tDeck: string;
@@ -45,6 +46,16 @@ export class TournamentComponent implements OnInit, AfterViewInit {
         this.dataSource.findTournaments(0, 10);
         this.comService.getObservable().subscribe(() => this.loadLessonsPage());
         setTimeout(() => this.length = this.tournamentService.length, 100);
+    }
+
+    lapicito(h: Tournament) {
+        console.log("LAPICITO");
+        console.log(h);
+    }
+
+    papelerita(tournament: Tournament) {
+        console.log("PAPELERITA");
+        console.log(tournament);
     }
 
     ngAfterViewInit() {

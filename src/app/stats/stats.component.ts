@@ -52,11 +52,15 @@ export class StatsComponent implements OnInit {
                         this.finalDeckResults.push({ deck: deck.deck, tV: deck.victories, tL: deck.loses, tD: deck.draws });
                     } else {
                         let repeated: any = this.finalDeckResults.find((f) => f.deck == deck.deck);
-                        repeated.tV = repeated.tV + deck.victories;
-                        repeated.tL = repeated.tL + deck.loses;
-                        repeated.tD = repeated.tD + deck.draws;
+                        repeated.tV += deck.victories;
+                        repeated.tL += deck.loses;
+                        repeated.tD += deck.draws;
                     }
                 });
+                this.finalDeckResults.forEach((fDR) => {
+                    fDR["wR"] = (fDR.tV * 100 / (fDR.tV + fDR.tL + fDR.tD)).toFixed(1);
+                });
+                this.finalDeckResults.sort((a, b) => b.wR - a.wR);
             });
     }
 
