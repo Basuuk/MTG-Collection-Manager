@@ -18,9 +18,17 @@ export class StatsComponent implements OnInit {
     nigekkiVictories: number = 0;
     adrikuVictories: number = 0;
     deckResults: any[] = [];
-    finalDeckResults: any[] = [];
+    finalDeckResultsModern: any[] = [];
+    finalDeckResultsStandard: any[] = [];
+    finalDeckResultsPioneer: any[] = [];
     decksWon: any[] = [];
     deckVictories: any[] = [];
+
+    finalDeckResults: any = {
+        1: this.finalDeckResultsModern,
+        2: this.finalDeckResultsStandard,
+        3: this.finalDeckResultsPioneer
+    }
 
     constructor(private activePlayerService: ActivePlayerService,
         private pDTService: PlayerDeckTournamentService) {
@@ -41,26 +49,34 @@ export class StatsComponent implements OnInit {
                         this.decksWon.push(t.deck.name);
                         this.adrikuVictories++;
                     }
-                    this.deckResults.push({ deck: t.deck.name, victories: +t.finalResult.charAt(0), loses: +t.finalResult.charAt(2), draws: t.finalResult.charAt(4) != "" ? t.finalResult.charAt(4) : 0 });
+                    this.deckResults.push({ deck: t.deck.name, format: t.deck.format, victories: +t.finalResult.charAt(0), loses: +t.finalResult.charAt(2), draws: t.finalResult.charAt(4) != "" ? t.finalResult.charAt(4) : 0 });
                 });
                 let u = [...new Set(this.decksWon)];
                 u.forEach((d) => {
-                    this.deckVictories.push({deck: d, victories: this.getOccurrence(this.decksWon, d)});
+                    this.deckVictories.push({ deck: d, victories: this.getOccurrence(this.decksWon, d) });
                 });
                 this.deckResults.forEach((deck) => {
-                    if (this.finalDeckResults.find((f) => f.deck == deck.deck) == undefined) {
-                        this.finalDeckResults.push({ deck: deck.deck, tV: deck.victories, tL: deck.loses, tD: deck.draws });
+                    if (this.finalDeckResults[deck.format.id].find((f) => f.deck == deck.deck) == undefined) {
+                        this.finalDeckResults[deck.format.id].push({ deck: deck.deck, tV: deck.victories, tL: deck.loses, tD: deck.draws });
                     } else {
-                        let repeated: any = this.finalDeckResults.find((f) => f.deck == deck.deck);
+                        let repeated: any = this.finalDeckResults[deck.format.id].find((f) => f.deck == deck.deck);
                         repeated.tV += deck.victories;
                         repeated.tL += deck.loses;
                         repeated.tD += deck.draws;
                     }
                 });
-                this.finalDeckResults.forEach((fDR) => {
+                this.finalDeckResultsModern.forEach((fDR) => {
                     fDR["wR"] = (fDR.tV * 100 / (fDR.tV + fDR.tL + fDR.tD)).toFixed(1);
                 });
-                this.finalDeckResults.sort((a, b) => b.wR - a.wR);
+                this.finalDeckResultsModern.sort((a, b) => b.wR - a.wR);
+                this.finalDeckResultsStandard.forEach((fDR) => {
+                    fDR["wR"] = (fDR.tV * 100 / (fDR.tV + fDR.tL + fDR.tD)).toFixed(1);
+                });
+                this.finalDeckResultsStandard.sort((a, b) => b.wR - a.wR);
+                this.finalDeckResultsPioneer.forEach((fDR) => {
+                    fDR["wR"] = (fDR.tV * 100 / (fDR.tV + fDR.tL + fDR.tD)).toFixed(1);
+                });
+                this.finalDeckResultsPioneer.sort((a, b) => b.wR - a.wR);
             });
     }
 

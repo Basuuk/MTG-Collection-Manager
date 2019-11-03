@@ -3,8 +3,17 @@
 <h3>Nigekki: <strong>{{nigekkiVictories}}</strong> veces</h3>
 <h3>Adriku: <strong>{{adrikuVictories}}</strong> veces</h3>
 <h1>Resultados por deck</h1>
+<h2>Modern</h2>
 <ul>
-    <li *ngFor="let deck of finalDeckResults"><strong>{{ deck.deck }}:</strong> {{ deck.tV }}-{{deck.tL}}-{{deck.tD}}. Win Rate: {{deck.wR}} %</li>
+    <li *ngFor="let deck of finalDeckResultsModern"><strong>{{ deck.deck }}:</strong> {{ deck.tV }}-{{deck.tL}}-{{deck.tD}}. Win Rate: {{deck.wR}} %</li>
+</ul>
+<h2>Standard</h2>
+<ul>
+    <li *ngFor="let deck of finalDeckResultsStandard"><strong>{{ deck.deck }}:</strong> {{ deck.tV }}-{{deck.tL}}-{{deck.tD}}. Win Rate: {{deck.wR}} %</li>
+</ul>
+<h2>Pioneer</h2>
+<ul>
+    <li *ngFor="let deck of finalDeckResultsPioneer"><strong>{{ deck.deck }}:</strong> {{ deck.tV }}-{{deck.tL}}-{{deck.tD}}. Win Rate: {{deck.wR}} %</li>
 </ul>
 <h1>Qué decks pescaron premio</h1>
 <ul>

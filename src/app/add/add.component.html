@@ -1,0 +1,54 @@
+<form>
+    <mat-form-field>
+        <input matInput placeholder="Jugador" autocomplete="off" [(ngModel)]="player"
+            [ngModelOptions]="{standalone: true}">
+    </mat-form-field>
+    <button (click)="addPlayer()" mat-icon-button color="primary">
+        <mat-icon>add</mat-icon>
+    </button>
+</form>
+<form>
+    <mat-form-field>
+        <input matInput placeholder="Deck" autocomplete="off" [(ngModel)]="deck" [ngModelOptions]="{standalone: true}">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Formato</mat-label>
+        <mat-select [(value)]="format">
+            <mat-option *ngFor="let f of availableFormats" value="{{f.id}}">
+                {{f.description}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button (click)="addDeck()" mat-icon-button color="primary">
+        <mat-icon>add</mat-icon>
+    </button>
+</form>
+
+<h1>Añadir torneo</h1>
+<form [formGroup]="tForm">
+    <mat-form-field>
+        <mat-label>Tipo</mat-label>
+        <mat-select formControlName="type">
+            <mat-option *ngFor="let t of availableTypes" value="{{t.id}}">
+                {{t.type}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Título" autocomplete="off" formControlName="title">
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Lugar" autocomplete="off" formControlName="location">
+    </mat-form-field>
+    <mat-form-field>
+        <textarea matInput placeholder="Comentarios" autocomplete="off" formControlName="comments"></textarea>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput [matDatepicker]="picker" placeholder="Fecha" formControlName="date">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <button (click)="addTournament()" mat-icon-button color="primary">
+        <mat-icon>add</mat-icon>
+    </button>
+</form>
